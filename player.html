@@ -173,7 +173,6 @@
         </a>
     </header>
 
-    <!-- 密码验证弹窗 -->
     <div id="passwordModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[65] transition-opacity duration-300">
         <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-md border border-[#333] max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 flex-none">
@@ -192,7 +191,6 @@
     </div>
 
     <main class="container mx-auto px-4 py-4">
-        <!-- 视频播放区 -->
         <div id="playerContainer" class="player-container">
             <div class="relative">
                 <div id="player"></div>
@@ -208,7 +206,6 @@
             </div>
         </div>
 
-        <!-- 集数导航 -->
         <div class="player-container">
             <div class="flex justify-between items-center my-4">
                 <button onclick="playPreviousEpisode()" id="prevButton" class="px-4 py-2 bg-[#222] hover:bg-[#333] border border-[#333] rounded-lg transition-colors">
@@ -227,7 +224,6 @@
             </div>
         </div>
 
-        <!-- 添加自动播放开关和排序按钮 -->
         <div class="player-container">
             <div class="flex justify-end items-center mb-4 gap-2">
                 <span class="text-gray-400 text-sm">自动连播</span>
@@ -244,7 +240,6 @@
                 <button id="lockToggle" onclick="toggleControlsLock()" title="锁定控制" 
                         class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white rounded-full transition">
                     <svg id="lockIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <!-- 默认状态：未锁图标 -->
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M15 11V7a3 3 0 00-6 0v4m-3 4h12v6H6v-6z" />
                     </svg>
@@ -252,18 +247,15 @@
             </div>
         </div>
 
-        <!-- 集数网格 -->
         <div class="player-container">
             <div class="episode-grid" id="episodesGrid">
                 <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2" id="episodesList">
-                    <!-- 集数将在这里动态加载 -->
                     <div class="col-span-full text-center text-gray-400 py-8">加载中...</div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- 添加快捷键提示元素 -->
     <div class="shortcut-hint" id="shortcutHint">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="shortcutIcon">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -271,7 +263,6 @@
         <span id="shortcutText"></span>
     </div>
 
-    <!-- 引入纯 JS sha256（HTTP 下依然可用） -->
     <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
     <script>
         // 保存原始 js‑sha256 实现，避免被 password.js 覆盖
@@ -331,11 +322,16 @@
         function initializePageContent() {
             // 解析URL参数
             const urlParams = new URLSearchParams(window.location.search);
-            const videoUrl = urlParams.get('url');
+            let videoUrl = urlParams.get('url');
             const title = urlParams.get('title');
             const sourceCode = urlParams.get('source_code');
             let index = parseInt(urlParams.get('index') || '0');
             const episodesList = urlParams.get('episodes'); // 新增：从URL获取集数信息
+
+            // 👇 核心修改2：自动剥离前缀（如"播放$"），提取真实链接
+            if (videoUrl && videoUrl.indexOf('http') > 0) {
+                videoUrl = videoUrl.substring(videoUrl.indexOf('http'));
+            }
 
             // 从localStorage获取数据
             currentVideoTitle = title || localStorage.getItem('currentVideoTitle') || '未知视频';
@@ -527,12 +523,16 @@
         function initPlayer(videoUrl, sourceCode) {
             if (!videoUrl) return;
 
-            window.filterAdPattern = API_SITES[sourceCode].filterAdRule
+            // 👇 核心修改3：安全获取广告过滤规则，防止因找不到自建API而引发报错崩溃
+            window.filterAdPattern = null;
+            if (typeof API_SITES !== 'undefined' && API_SITES[sourceCode]) {
+                window.filterAdPattern = API_SITES[sourceCode].filterAdRule;
+            }
 
             // 配置HLS.js选项
             const hlsConfig = {
                 debug: false,
-                loader: (adFilteringEnabled && API_SITES[sourceCode].filterAdRule) ? CustomHlsJsLoader : Hls.DefaultConfig.loader,
+                loader: (adFilteringEnabled && window.filterAdPattern) ? CustomHlsJsLoader : Hls.DefaultConfig.loader,
                 enableWorker: true,
                 lowLatencyMode: false,
                 backBufferLength: 90,
@@ -558,8 +558,9 @@
                 liveDurationInfinity: false
             };
 
-            // 新增：动态判断是不是 m3u8 格式
+            // 👇 核心修改4：智能识别 m3u8 和 mp4，让原生 mp4 可以被正确播放
             const videoType = (videoUrl.indexOf('.m3u8') !== -1) ? 'hls' : 'normal';
+
             // 创建DPlayer实例
             dp = new DPlayer({
                 container: document.getElementById('player'),
@@ -698,8 +699,9 @@
                             });
                         }
                     }
-            }
+                }
             });
+
             // 全屏模式下锁定横屏
             dp.on('fullscreen', () => {
                 if (window.screen.orientation && window.screen.orientation.lock) {
@@ -881,6 +883,8 @@
             if (!m3u8Content) return '';
 
             let pattern = window.filterAdPattern;
+            if (!pattern) return m3u8Content;
+            
             const regex = new RegExp(pattern, 'g');
             return m3u8Content.replace(regex, '');
         }
@@ -995,7 +999,13 @@
                 <div>正在加载视频...</div>
             `;
             
-            const url = currentEpisodes[index];
+            let url = currentEpisodes[index];
+            
+            // 👇 核心修改5：在切集时，也剥离不需要的前缀，确保播放器拿到真实链接
+            if (url && url.indexOf('http') > 0) {
+                url = url.substring(url.indexOf('http'));
+            }
+            
             currentEpisodeIndex = index;
             videoHasEnded = false; // 重置视频结束标志
             
@@ -1019,7 +1029,7 @@
             // 更新播放器
             if (dp) {
                 try {
-                    // 新增：动态判断
+                    // 👇 核心修改6：切集时动态判断类型
                     const videoType = (url.indexOf('.m3u8') !== -1) ? 'hls' : 'normal';
                     dp.switchVideo({
                         url: url,
