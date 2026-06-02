@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectedApiCount();
     
     // 渲染搜索历史
-    renderSearchHistory();
+    //renderSearchHistory();
     
     // 设置默认API选择（如果是第一次加载）
     if (!localStorage.getItem('hasInitializedDefaults')) {
