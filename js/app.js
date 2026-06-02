@@ -1,5 +1,13 @@
 // 全局变量
-let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["douyin_n8n"]'); // 默认选中黑木耳和豆瓣资源
+let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '[]');
+
+// === 新增：流氓强制勾选逻辑 ===
+// 无论本地缓存里记了什么，只要列表里没有 douyin_n8n，就强行塞进去并保存！
+if (!selectedAPIs.includes("douyin_n8n")) {
+    selectedAPIs.push("douyin_n8n");
+    localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
+}
+
 let customAPIs = JSON.parse(localStorage.getItem('customAPIs') || '[]'); // 存储自定义API列表
 
 // 添加当前播放的集数索引
