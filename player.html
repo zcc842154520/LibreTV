@@ -557,7 +557,9 @@
                 liveSyncDurationCount: 3,
                 liveDurationInfinity: false
             };
-            
+
+            // 新增：动态判断是不是 m3u8 格式
+            const videoType = (videoUrl.indexOf('.m3u8') !== -1) ? 'hls' : 'normal';
             // 创建DPlayer实例
             dp = new DPlayer({
                 container: document.getElementById('player'),
@@ -587,7 +589,7 @@
                 ],
                 video: {
                     url: videoUrl,
-                    type: 'hls',
+                    type: videoType,
                     pic: 'https://img.picgo.net/2025/04/12/image362e7d38b4af4a74.png', // 设置视频封面图
                     customType: {
                         hls: function(video, player) {
@@ -1017,9 +1019,11 @@
             // 更新播放器
             if (dp) {
                 try {
+                    // 新增：动态判断
+                    const videoType = (url.indexOf('.m3u8') !== -1) ? 'hls' : 'normal';
                     dp.switchVideo({
                         url: url,
-                        type: 'hls'
+                        type: videoType
                     });
                     
                     // 确保播放开始
