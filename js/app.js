@@ -56,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始检查成人API选中状态
     setTimeout(checkAdultAPIsSelected, 100);
+    
+    // === 新增：页面加载后，延迟0.5秒自动执行全量搜索 ===
+    setTimeout(() => {
+        search(true); // 传入 true，代表是系统自动触发的初始加载
+    }, 500);
 });
 
 // 初始化API复选框
@@ -570,23 +575,24 @@ function getCustomApiInfo(customApiIndex) {
 }
 
 // 搜索功能 - 修改为支持多选API
-async function search() {
+async function search(isInit = false) { // <--- 1. 这里加个参数
     // 密码保护校验
     if (window.isPasswordProtected && window.isPasswordVerified) {
         if (window.isPasswordProtected() && !window.isPasswordVerified()) {
-            showPasswordModal && showPasswordModal();
+            if (!isInit) showPasswordModal && showPasswordModal();
             return;
         }
     }
     const query = document.getElementById('searchInput').value.trim();
     
-    if (!query) {
+    // <--- 2. 如果不是初始化，且没填词，才拦截
+    if (!query && !isInit) {
         showToast('请输入搜索内容', 'info');
         return;
     }
     
     if (selectedAPIs.length === 0) {
-        showToast('请至少选择一个API源', 'warning');
+        if (!isInit) showToast('请至少选择一个API源', 'warning');
         return;
     }
     
