@@ -3,13 +3,11 @@ const PROXY_URL = '/proxy/';    // 适用于 Cloudflare, Netlify (带重写), Ve
 const SEARCH_HISTORY_KEY = 'videoSearchHistory';
 const MAX_HISTORY_ITEMS = 5;
 
-// 密码保护配置
 const PASSWORD_CONFIG = {
-    localStorageKey: 'passwordVerified',  // 存储验证状态的键名
-    verificationTTL: 90 * 24 * 60 * 60 * 1000,  // 验证有效期（90天，约3个月）
+    localStorageKey: 'passwordVerified',
+    verificationTTL: 90 * 24 * 60 * 60 * 1000,
 };
 
-// 网站信息配置
 const SITE_CONFIG = {
     name: 'LibreTV',
     url: 'https://libretv.is-an.org',
@@ -19,11 +17,12 @@ const SITE_CONFIG = {
 };
 
 // ==========================================
-// 👇 1. 您的专属 API 站点配置
+// 👇 1. 专属 API 站点配置（注意结尾绝对不能有斜杠）
 // ==========================================
 const API_SITES = {
     douyin_n8n: {
-        api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist', // n8n 接口根路径（不要加斜杠）
+        // 精准对齐您测试成功的路径，结尾千万别加 /
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist/api.php/provide/vod', 
         name: '抖音短剧(专属)',
         adult: false,
         filterAdRule: null
@@ -39,32 +38,28 @@ const AGGREGATED_SEARCH_CONFIG = {
 };
 
 // ==========================================
-// 👇 2. 核心修复：抽象API请求配置（去掉冗余路径，直接问号传参）
+// 👇 2. 接口请求配置（直接以问号开头，不要加斜杠）
 // ==========================================
 const API_CONFIG = {
     search: {
-        path: '?ac=videolist&wd=', // 直接用 ? 拼接，这样 n8n 就能完美识别了
+        path: '?ac=videolist&wd=', // <--- 确保这里直接是 ? 开头
         headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'application/json'
         }
     },
     detail: {
-        path: '?ac=videolist&ids=', // 直接用 ? 拼接
+        path: '?ac=videolist&ids=', // <--- 确保这里直接是 ? 开头
         headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'application/json'
         }
     }
 };
 
-// 优化后的正则表达式模式
 const M3U8_PATTERN = /\$https?:\/\/[^"'\s]+?\.m3u8/g;
-
-// 添加自定义播放器URL
 const CUSTOM_PLAYER_URL = 'player.html'; 
 
-// 增加视频播放相关配置
 const PLAYER_CONFIG = {
     autoplay: true,
     allowFullscreen: true,
@@ -77,7 +72,6 @@ const PLAYER_CONFIG = {
     adFilteringStorage: 'adFilteringEnabled' 
 };
 
-// 增加错误信息本地化
 const ERROR_MESSAGES = {
     NETWORK_ERROR: '网络连接错误，请检查网络设置',
     TIMEOUT_ERROR: '请求超时，服务器响应时间过长',
@@ -86,14 +80,12 @@ const ERROR_MESSAGES = {
     UNKNOWN_ERROR: '发生未知错误，请刷新页面重试'
 };
 
-// 添加进一步安全设置
 const SECURITY_CONFIG = {
     enableXSSProtection: true,  
     sanitizeUrls: true,         
     maxQueryLength: 100,        
 };
 
-// 添加多个自定义API源的配置
 const CUSTOM_API_CONFIG = {
     separator: ',',           
     maxSources: 5,            
@@ -105,5 +97,4 @@ const CUSTOM_API_CONFIG = {
     adultPropName: 'isAdult' 
 };
 
-// 隐藏内置黄色采集站API的变量
 const HIDE_BUILTIN_ADULT_APIS = true;
