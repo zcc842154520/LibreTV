@@ -214,10 +214,15 @@
                     // 请求您的 n8n 代理节点
                     const parseApi = `https://ocin8n.ccwork.nyc.mn/webhook/douyin-proxy?url=${encodeURIComponent(videoUrl)}`;
                     const res = await fetch(parseApi);
-                    const result = await res.json();
+                    let result = await res.json();
+                    
+                    // 👇 新增：如果是数组，就自动提取第一个元素（拆包）
+                    if (Array.isArray(result) && result.length > 0) {
+                        result = result[0];
+                    }
                     
                     let mp4Url = '';
-                    if (result.code === 200 && result.data && result.data.video) {
+                    if (result && result.code === 200 && result.data && result.data.video) {
                         // 优先提取最高画质的 CDN 直链
                         if (result.data.video.bit_rate && result.data.video.bit_rate.length > 0) {
                             mp4Url = result.data.video.bit_rate[0].play_addr.url_list[0];
