@@ -78,11 +78,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始检查成人API选中状态
     setTimeout(checkAdultAPIsSelected, 100);
-    
-    // === 新增：页面加载后，延迟0.5秒自动执行全量搜索 ===
-    setTimeout(() => {
-        search(true); // 传入 true，代表是系统自动触发的初始加载
-    }, 500);
+    // 启动自动搜索检查
+    tryAutoSearch();
+});
+
+// === 终极就绪检查逻辑 ===
+function tryAutoSearch(attempts = 0) {
+    // 1. 检查搜索函数是否已定义，且 API_SITES 是否已加载
+    if (typeof search === 'function' && typeof API_SITES !== 'undefined') {
+        console.log("环境就绪，执行自动搜索...");
+        search(true); 
+    } else if (attempts < 10) {
+        // 2. 如果没准备好，每 200ms 重试一次，最多重试 10 次
+        console.log("等待环境就绪...");
+        setTimeout(() => tryAutoSearch(attempts + 1), 200);
+    } else {
+        console.error("无法执行自动搜索：环境初始化超时");
+    }
+}
+
+// 页面加载后启动检查
+document.addEventListener('DOMContentLoaded', () => {
+    tryAutoSearch();
 });
 
 // 初始化API复选框
