@@ -537,14 +537,21 @@ function setupEventListeners() {
         }
     });
 
-    // 点击外部关闭设置面板
+   // 点击外部关闭设置面板
     document.addEventListener('click', function(e) {
         const panel = document.getElementById('settingsPanel');
         const settingsButton = document.querySelector('button[onclick="toggleSettings(event)"]');
         
-        if (!panel.contains(e.target) && !settingsButton.contains(e.target) && panel.classList.contains('show')) {
-            panel.classList.remove('show');
+        // 如果面板不存在或者本来就没显示，直接跳过
+        if (!panel || !panel.classList.contains('show')) return;
+        
+        // 如果点击的是设置按钮本身，或者点击的是面板内部，什么都不做
+        if ((settingsButton && settingsButton.contains(e.target)) || panel.contains(e.target)) {
+            return;
         }
+        
+        // 只有点击了面板和按钮之外的地方，才执行关闭
+        panel.classList.remove('show');
     });
     
     // 黄色内容过滤开关事件绑定
