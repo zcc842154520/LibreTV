@@ -1,13 +1,12 @@
-// 获取已选API，如果没有则默认启用这三个
-let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["douyin_n8n", "gdrive_n8n", "douyin_mix_n8n"]');
+// 按新顺序设置默认勾选
+let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["douyin_mix_n8n", "gdrive_n8n", "douyin_n8n"]');
 
 let needsSave = false;
 
-// 确保这三个源始终在默认列表中
-if (!selectedAPIs.includes("douyin_n8n")) { selectedAPIs.push("douyin_n8n"); needsSave = true; }
-if (!selectedAPIs.includes("gdrive_n8n")) { selectedAPIs.push("gdrive_n8n"); needsSave = true; }
-// 👇 新增强制检测勾选 👇
+// 确保强制勾选，也按照新顺序排列代码
 if (!selectedAPIs.includes("douyin_mix_n8n")) { selectedAPIs.push("douyin_mix_n8n"); needsSave = true; }
+if (!selectedAPIs.includes("gdrive_n8n")) { selectedAPIs.push("gdrive_n8n"); needsSave = true; }
+if (!selectedAPIs.includes("douyin_n8n")) { selectedAPIs.push("douyin_n8n"); needsSave = true; }
 
 if (needsSave) {
     localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
