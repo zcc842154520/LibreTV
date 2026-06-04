@@ -20,26 +20,27 @@ const SITE_CONFIG = {
 // 👇 1. 专属 API 站点配置（注意结尾绝对不能有斜杠）
 // ==========================================
 const API_SITES = {
-    douyin_n8n: {
-        api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist/api.php/provide/vod', 
-        name: '抖音短剧(专属)',
+    // 1. 排在最前面：合集(连载)
+    douyin_mix_n8n: {
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/douyin-mix-playlist',
+        name: '合集(连载)',
         adult: false,
         filterAdRule: null
     },
+    // 2. 中间：沙雕社(云盘)
     gdrive_n8n: {
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
         name: '沙雕社(云盘)',
         adult: false,
         filterAdRule: null
     },
-    // 👇 新增：抖音合集接口 👇
-    douyin_mix_n8n: {
-        api: 'https://ocin8n.ccwork.nyc.mn/webhook/douyin-mix-playlist', // 对应从 MySQL 拉取列表的 Webhook
-        name: '抖音合集(连载)',
+    // 3. 最后面：长视频
+    douyin_n8n: {
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist/api.php/provide/vod', 
+        name: '长视频',
         adult: false,
         filterAdRule: null
     }
-    // 👆 新增结束 👆
 };
 
 const AGGREGATED_SEARCH_CONFIG = {
