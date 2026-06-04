@@ -1,10 +1,21 @@
-// 全局变量
-let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '[]');
+// 1. 默认同时勾选抖音和私人云盘
+let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["douyin_n8n", "gdrive_n8n"]');
 
-// === 新增：流氓强制勾选逻辑 ===
-// 无论本地缓存里记了什么，只要列表里没有 douyin_n8n，就强行塞进去并保存！
+// 2. 流氓强制勾选逻辑：无论用户怎么清缓存，这两个源都必须死死焊在上面！
+let needsSave = false;
+
 if (!selectedAPIs.includes("douyin_n8n")) {
     selectedAPIs.push("douyin_n8n");
+    needsSave = true;
+}
+
+if (!selectedAPIs.includes("gdrive_n8n")) {
+    selectedAPIs.push("gdrive_n8n");
+    needsSave = true;
+}
+
+// 如果发现有缺失并补全了，就重新保存到本地缓存中
+if (needsSave) {
     localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
 }
 
