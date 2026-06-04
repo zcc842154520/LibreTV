@@ -21,9 +21,15 @@ const SITE_CONFIG = {
 // ==========================================
 const API_SITES = {
     douyin_n8n: {
-        // 精准对齐您测试成功的路径，结尾千万别加 /
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist/api.php/provide/vod', 
         name: '抖音短剧(专属)',
+        adult: false,
+        filterAdRule: null
+    },
+    // 👇 必须确保这段代码已经存在于 GitHub 上
+    gdrive_n8n: {
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
+        name: '沙雕社(云盘)',
         adult: false,
         filterAdRule: null
     }
