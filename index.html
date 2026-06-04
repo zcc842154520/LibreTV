@@ -9,32 +9,27 @@
     <meta name="author" content="LibreTV Team">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://libretv.is-an.org/">
     <meta property="og:title" content="LibreTV - 免费在线视频搜索与观看平台">
     <meta property="og:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
     <meta property="og:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
     
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://libretv.is-an.org/">
     <meta property="twitter:title" content="LibreTV - 免费在线视频搜索与观看平台">
     <meta property="twitter:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
     <meta property="twitter:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
     
-    <!-- Favicon -->
     <link rel="icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
     <link rel="apple-touch-icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
     
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://libretv.is-an.org/">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="page-bg text-white">
-    <!-- 将历史记录按钮移到左上角，并缩小尺寸 -->
     <div class="fixed top-4 left-4 z-50">
         <button onclick="toggleHistory(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="观看历史">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -43,7 +38,6 @@
         </button>
     </div>
 
-    <!-- 设置按钮保留在右上角，并缩小尺寸 -->
     <div class="fixed top-4 right-4 z-50">
         <button onclick="toggleSettings(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="打开设置">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -53,15 +47,12 @@
         </button>
     </div>
     
-    <!-- 历史记录面板 - 标题居中 -->
     <div id="historyPanel" class="history-panel fixed left-0 top-0 h-full bg-[#111] border-r border-[#333] p-6 z-40 transform -translate-x-full transition-transform duration-300" aria-label="观看历史" aria-hidden="true">
         <div class="flex justify-between items-center mb-6">
             <button onclick="toggleHistory()" class="text-gray-400 hover:text-white" aria-label="关闭历史">&times;</button>
             <h3 class="text-xl font-bold gradient-text mx-auto">观看历史</h3>
-            <div class="w-4"></div> <!-- 添加一个占位元素以确保标题居中 -->
-        </div>
+            <div class="w-4"></div> </div>
         <div id="historyList" class="pb-4">
-            <!-- 历史记录将在这里动态显示 -->
             <div class="text-center text-gray-500 py-8">暂无观看记录</div>
         </div>
         <div class="mt-4 text-center sticky bottom-0 pb-2 pt-2 bg-[#111]">
@@ -71,53 +62,43 @@
         </div>
     </div>
 
-    <!-- 设置面板 -->
     <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40 overflow-y-auto" aria-label="设置面板" aria-hidden="true">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold gradient-text">设置</h3>
             <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">&times;</button>
         </div>
         <div class="space-y-5">
-            <!-- 数据源设置区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
                 <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">数据源设置</label>
                 
-                <!-- 批量操作按钮 -->
                 <div class="flex space-x-2 mb-3">
                     <button onclick="selectAllAPIs(true)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全选</button>
                     <button onclick="selectAllAPIs(false)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全不选</button>
                     <button onclick="selectAllAPIs(true, true)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全选普通资源</button>
                 </div>
                 
-                <!-- API选择区域 - 使用滚动区域 -->
                 <div class="max-h-40 overflow-y-auto bg-[#191919] p-2 rounded-lg mb-3">
                     <div id="apiCheckboxes" class="grid grid-cols-2 gap-2">
-                        <!-- 这里将动态插入API复选框 -->
-                    </div>
+                        </div>
                 </div>
                 
-                <!-- API信息显示 -->
                 <div class="text-xs text-gray-500 flex justify-between items-center">
                     <span>已选API数量：<span id="selectedApiCount" class="text-white">0</span></span>
                     <span id="siteStatus" class="ml-2"></span>
                 </div>
             </div>
 
-            <!-- 自定义API管理区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
                 <div class="flex justify-between items-center mb-2">
                     <label class="block text-sm font-medium text-gray-400 border-b border-[#333] w-full pb-1">自定义API</label>
                     <button onclick="showAddCustomApiForm()" class="bg-[#333] hover:bg-[#444] text-white w-6 h-6 rounded-full text-center leading-none text-lg ml-1">+</button>
                 </div>
                 <div id="customApisList" class="max-h-32 overflow-y-auto mb-2">
-                    <!-- 自定义API将显示在这里 -->
-                </div>
+                    </div>
                 
-                <!-- 添加自定义API表单 (默认隐藏) -->
                 <div id="addCustomApiForm" class="hidden mt-2 p-2 bg-[#191919] rounded-lg">
                     <input type="text" id="customApiName" placeholder="API名称" class="w-full bg-[#222] border border-[#333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
                     <input type="text" id="customApiUrl" placeholder="https://abc.com" class="w-full bg-[#222] border border-[#333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
-                    <!-- 添加成人内容切换 -->
                     <div class="flex items-center mb-2">
                         <input type="checkbox" id="customApiIsAdult" class="form-checkbox h-4 w-4 text-pink-500 bg-[#222] border border-[#333]">
                         <label for="customApiIsAdult" class="ml-2 text-xs text-pink-400">黄色资源站</label>
@@ -129,11 +110,9 @@
                 </div>
             </div>
             
-            <!-- 内容过滤设置区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
                 <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">功能开关</label>
                 
-                <!-- 黄色内容过滤开关 -->
                 <div class="flex flex-col mb-3 pb-3 border-b border-[#222] relative">
                     <div class="flex items-center justify-between">
                         <div>
@@ -146,10 +125,8 @@
                             <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                         </div>
                     </div>
-                    <!-- 警告提示将在这里动态插入 -->
-                </div>
+                    </div>
                 
-                <!-- 广告过滤开关 -->
                 <div class="flex items-center justify-between mb-3 pb-3 border-b border-[#222]">
                     <div>
                         <label class="text-sm font-medium text-gray-400">分片广告过滤</label>
@@ -162,7 +139,6 @@
                     </div>
                 </div>
                 
-                <!-- 豆瓣热门开关 -->
                 <div class="flex items-center justify-between">
                     <div>
                         <label class="text-sm font-medium text-gray-400">豆瓣热门推荐</label>
@@ -180,7 +156,6 @@
 
     <div class="container mx-auto px-4 py-8 flex flex-col h-screen">
         <div class="flex-1 flex flex-col">
-            <!-- 网站标志和口号 -->
             <header class="text-center mb-2">
                 <div class="flex justify-center items-center mb-4">
                     <a href="#" onclick="resetToHome(); return false;" class="flex items-center">
@@ -197,20 +172,17 @@
             <div id="searchArea" class="flex-1 flex flex-col items-center justify-center">
                 <div class="w-full max-w-2xl">
                     <div class="flex items-stretch mb-3 h-14 shadow-lg rounded-lg overflow-hidden">
-                        <!-- 首页按钮 -->
                         <button onclick="resetToHome()" 
                                 class="w-20 sm:w-24 flex items-center justify-center bg-white text-black font-medium hover:bg-gray-200 transition-colors" 
                                 aria-label="返回首页" title="返回首页">
                             首页
                         </button>
-                        <!-- 搜索输入 -->
                         <input type="text" 
                                id="searchInput" 
                                class="flex-1 bg-[#111] border-y border-[#333] text-white px-6 py-0 focus:outline-none transition-colors" 
                                placeholder="搜索你喜欢的视频..." 
                                autocomplete="off"
                                aria-label="视频搜索框">
-                        <!-- 搜索按钮 -->
                         <button onclick="search()" 
                                 class="w-20 sm:w-24 flex items-center justify-center bg-white text-black font-medium hover:bg-gray-200 transition-colors" 
                                 aria-label="搜索按钮">
@@ -218,23 +190,22 @@
                         </button>
                     </div>
                     
-                    <!-- 添加最近搜索记录部分 -->
                     <div id="recentSearches" class="mt-4 flex flex-wrap gap-2" aria-label="最近搜索记录">
-                        <!-- 这里会动态插入最近的搜索记录 -->
+                        </div>
+
+                    <div id="sourceFilterContainer" class="hidden mt-6 w-full flex justify-center transition-all duration-300">
+                        <div id="sourceFilterList" class="flex flex-wrap gap-3 justify-center">
+                            </div>
                     </div>
-                </div>
+                    </div>
             </div>
             
-            <!-- 豆瓣热门推荐区域: 默认隐藏，现在位于搜索区域下方，调整宽度 -->
             <div id="doubanArea" class="w-full my-8 hidden">
                 <div class="mx-auto max-w-screen-xl px-2">
-                    <!-- 改进标题和标签区域布局 -->
                     <div class="mb-4">
-                        <!-- 标题和刷新按钮一行 -->
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center">
                                 <h2 class="text-xl font-bold text-white mr-4">豆瓣热门</h2>
-                                <!-- 添加电影/电视剧切换开关 -->
                                 <div class="flex items-center bg-[#222] rounded-full p-1">
                                     <button id="douban-movie-toggle" class="px-3 py-1 text-sm rounded-full bg-pink-600 text-white">电影</button>
                                     <button id="douban-tv-toggle" class="px-3 py-1 text-sm rounded-full text-gray-300 hover:text-white">电视剧</button>
@@ -247,34 +218,28 @@
                                 </svg>
                             </button>
                         </div>
-                        <!-- 分类标签独立成行，添加滚动支持以适应移动设备 -->
                         <div class="overflow-x-auto pb-2">
                             <div id="douban-tags" class="flex space-x-2 min-w-max"></div>
                         </div>
                     </div>
                     
-                    <!-- 推荐内容 -->
                     <div id="douban-results" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"></div>
                 </div>
             </div>
             
-            <!-- 搜索结果：初始隐藏 -->
             <div id="resultsArea" class="w-full hidden">
-                <div class="mx-auto max-w-7xl px-2"> <!-- 添加最大宽度限制并居中 -->
-                    <div class="flex justify-end items-center mb-4">
+                <div class="mx-auto max-w-7xl px-2"> <div class="flex justify-end items-center mb-4">
                         <div class="text-sm text-gray-400">
                             <span id="searchResultsCount">0</span> 个结果
                         </div>
                     </div>
                     <div id="results" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                        <!-- 结果将在这里动态生成 -->
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 页脚区域 -->
     <footer class="footer mt-8 py-6 border-t border-[#333] bg-[#0a0a0a]">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -302,7 +267,6 @@
         </div>
     </footer>
 
-    <!-- 详情模态框 -->
     <div id="modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center transition-opacity duration-300">
         <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-4xl border border-[#333] max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 flex-none">
@@ -316,7 +280,6 @@
         </div>
     </div>
 
-    <!-- 密码验证弹窗 -->
     <div id="passwordModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[65] transition-opacity duration-300">
         <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-md border border-[#333] max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 flex-none">
@@ -334,12 +297,10 @@
         </div>
     </div>
 
-    <!-- 错误提示框 -->
     <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 opacity-0 -translate-y-full">
         <p id="toastMessage"></p>
     </div>
 
-    <!-- 添加 loading 提示框 -->
     <div id="loading" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
         <div class="bg-[#111] p-8 rounded-lg border border-[#333] flex items-center space-x-4">
             <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -347,7 +308,6 @@
         </div>
     </div>
 
-    <!-- JSON-LD 结构化数据 -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -363,7 +323,6 @@
     }
     </script>
 
-    <!-- 引入纯 JS sha256（HTTP 下依然可用） -->
     <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
     <script>
         // 保存原始 js‑sha256 实现，避免被 password.js 覆盖
@@ -376,7 +335,6 @@
     <script src="js/password.js"></script>
     <script src="js/app.js"></script>
 
-    <!-- 环境变量注入脚本 -->
     <script>
         // 创建全局环境变量对象
         window.__ENV__ = window.__ENV__ || {};
@@ -385,5 +343,95 @@
         // PASSWORD 变量将在这里被服务器端注入
         window.__ENV__.PASSWORD = "{{PASSWORD}}";
     </script>
-</body>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const resultsDiv = document.getElementById('results');
+        const filterContainer = document.getElementById('sourceFilterContainer');
+        const filterList = document.getElementById('sourceFilterList');
+        
+        if (!resultsDiv || !filterContainer) return;
+
+        let debounceTimer;
+        
+        // 核心：监听结果区域的变化，自动生成对应的过滤按钮
+        const observer = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                buildFilters();
+            }, 300); // 延迟300毫秒，等待视频卡片全部渲染完毕
+        });
+        
+        observer.observe(resultsDiv, { childList: true });
+
+        // 构建过滤按钮的函数
+        function buildFilters() {
+            const cards = resultsDiv.children;
+            if (cards.length === 0) {
+                filterContainer.classList.add('hidden');
+                return;
+            }
+
+            // 1. 智能提取当前页面搜索结果中包含的所有来源
+            const sourceSet = new Set();
+            Array.from(cards).forEach(card => {
+                if (typeof API_SITES !== 'undefined') {
+                    Object.values(API_SITES).forEach(site => {
+                        // 匹配卡片底部的来源文字
+                        if (card.innerText.includes(site.name)) {
+                            sourceSet.add(site.name);
+                        }
+                    });
+                }
+            });
+
+            const sourceArray = Array.from(sourceSet);
+            // 如果搜索结果只来自1个源，就没必要显示过滤栏了，保持清爽
+            if (sourceArray.length <= 1) {
+                filterContainer.classList.add('hidden');
+                return;
+            }
+
+            // 2. 动态生成按钮 HTML（贴合网站暗色主题）
+            filterContainer.classList.remove('hidden');
+            let html = `<button onclick="filterBySource('全部')" class="source-filter-btn px-5 py-1.5 rounded-md text-sm font-medium transition-colors bg-pink-600 text-white shadow-md">全部</button>`;
+            
+            sourceArray.forEach(src => {
+                html += `<button onclick="filterBySource('${src}')" class="source-filter-btn px-5 py-1.5 rounded-md text-sm font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700">${src}</button>`;
+            });
+            
+            filterList.innerHTML = html;
+        }
+        
+        // 3. 挂载全局过滤函数（通过纯前端隐藏显示，实现毫秒级秒切）
+        window.filterBySource = function(sourceName) {
+            const cards = resultsDiv.children;
+            let visibleCount = 0;
+            
+            Array.from(cards).forEach(card => {
+                if (sourceName === '全部' || card.innerText.includes(sourceName)) {
+                    card.style.display = ''; // 显示
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none'; // 隐藏
+                }
+            });
+            
+            // 联动更新页面右侧的总数统计
+            const countEl = document.getElementById('searchResultsCount');
+            if(countEl) countEl.innerText = visibleCount;
+            
+            // 更新按钮的高亮选中状态
+            const btns = filterList.querySelectorAll('.source-filter-btn');
+            btns.forEach(btn => {
+                if (btn.innerText === sourceName) {
+                    btn.className = 'source-filter-btn px-5 py-1.5 rounded-md text-sm font-medium transition-colors bg-pink-600 text-white shadow-md';
+                } else {
+                    btn.className = 'source-filter-btn px-5 py-1.5 rounded-md text-sm font-medium transition-colors bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700';
+                }
+            });
+        };
+    });
+    </script>
+    </body>
 </html>
