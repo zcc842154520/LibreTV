@@ -537,21 +537,24 @@ function setupEventListeners() {
         }
     });
 
-   // 点击外部关闭设置面板
+  // 点击外部关闭设置面板（升级版）
     document.addEventListener('click', function(e) {
         const panel = document.getElementById('settingsPanel');
-        const settingsButton = document.querySelector('button[onclick="toggleSettings(event)"]');
+        // 获取您的设置按钮，请确保这里选择器能选中您的按钮
+        // 如果您的按钮不是通过这个选择器选中的，请修改下面的引号内容
+        const settingsButton = document.querySelector('button[onclick*="toggleSettings"]'); 
         
-        // 如果面板不存在或者本来就没显示，直接跳过
-        if (!panel || !panel.classList.contains('show')) return;
+        if (!panel) return;
         
-        // 如果点击的是设置按钮本身，或者点击的是面板内部，什么都不做
+        // 1. 如果点击的是按钮本身，或者点击的是面板内部，则什么都不做
         if ((settingsButton && settingsButton.contains(e.target)) || panel.contains(e.target)) {
             return;
         }
         
-        // 只有点击了面板和按钮之外的地方，才执行关闭
-        panel.classList.remove('show');
+        // 2. 只有点击了面板和按钮之外的地方，才执行关闭
+        if (panel.classList.contains('show')) {
+            panel.classList.remove('show');
+        }
     });
     
     // 黄色内容过滤开关事件绑定
