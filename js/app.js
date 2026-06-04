@@ -1,16 +1,26 @@
-// 按新顺序设置默认勾选
-let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["douyin_mix_n8n", "gdrive_n8n", "douyin_n8n"]');
+// =====================================================================
+// 1. 动态读取 config.js 中所有可用的 API 键名
+const allAvailableApis = Object.keys(API_SITES);
+let selectedAPIs = [];
 
-let needsSave = false;
+try {
+    // 2. 尝试读取本地缓存
+    let savedAPIs = localStorage.getItem('selectedAPIs');
+    if (savedAPIs) {
+        // 解析缓存，并过滤掉那些已经被删除或改名的旧接口
+        selectedAPIs = JSON.parse(savedAPIs).filter(api => allAvailableApis.includes(api));
+    }
+} catch (e) {
+    console.error("缓存解析异常，将重置数据源选择");
+}
 
-// 确保强制勾选，也按照新顺序排列代码
-if (!selectedAPIs.includes("douyin_mix_n8n")) { selectedAPIs.push("douyin_mix_n8n"); needsSave = true; }
-if (!selectedAPIs.includes("gdrive_n8n")) { selectedAPIs.push("gdrive_n8n"); needsSave = true; }
-if (!selectedAPIs.includes("douyin_n8n")) { selectedAPIs.push("douyin_n8n"); needsSave = true; }
-
-if (needsSave) {
+// 3. 【核心防空白逻辑】如果没缓存、初次打开、或是过滤后为空
+if (selectedAPIs.length === 0) {
+    // 强制默认勾选所有可用的接口！
+    selectedAPIs = [...allAvailableApis];
     localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
 }
+// =====================================================================
 
 let customAPIs = JSON.parse(localStorage.getItem('customAPIs') || '[]'); // 存储自定义API列表
 
