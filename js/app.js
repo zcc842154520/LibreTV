@@ -12,11 +12,6 @@ if (needsSave) {
     localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
 }
 
-// 如果发现有缺失并补全了，就重新保存到本地缓存中
-if (needsSave) {
-    localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
-}
-
 let customAPIs = JSON.parse(localStorage.getItem('customAPIs') || '[]'); // 存储自定义API列表
 
 // 添加当前播放的集数索引
