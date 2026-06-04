@@ -26,13 +26,20 @@ const API_SITES = {
         adult: false,
         filterAdRule: null
     },
-    // 👇 必须确保这段代码已经存在于 GitHub 上
     gdrive_n8n: {
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
         name: '沙雕社(云盘)',
         adult: false,
         filterAdRule: null
+    },
+    // 👇 新增：抖音合集接口 👇
+    douyin_mix_n8n: {
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/douyin-mix-playlist', // 对应从 MySQL 拉取列表的 Webhook
+        name: '抖音合集(连载)',
+        adult: false,
+        filterAdRule: null
     }
+    // 👆 新增结束 👆
 };
 
 const AGGREGATED_SEARCH_CONFIG = {
