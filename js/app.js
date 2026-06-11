@@ -24,12 +24,12 @@ let currentEpisodes = [];
 let currentVideoTitle = '';
 let episodesReversed = false;
 
-// === 新增：分页全局变量 ===
-let globalSearchResults = []; // 在内存中保存所有搜索结果
-let currentPage = 1;          // 当前所在页码
-const itemsPerPage = 24;      // 每页显示数量 
+// === 分页全局变量 ===
+let globalSearchResults = []; 
+let currentPage = 1;          
+const itemsPerPage = 20;      // 👈 【修改点 1】：每页改成 20 个视频
 
-// === 核心：递归就绪检查，确保环境加载后再触发自动搜索 ===
+// === 核心：递归就绪检查 ===
 function tryAutoSearch(attempts = 0) {
     if (typeof search === 'function' && typeof API_SITES !== 'undefined') {
         search(true); 
@@ -784,12 +784,15 @@ function toggleEpisodeOrder(sourceCode) {
 }
 
 // =====================================================================
-// === 新增：纯前端内存分页核心模块 ===
+// === 纯前端内存分页核心模块 ===
 // =====================================================================
 
 function renderPage(page) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
+
+    // 👈 【修改点 2】：强制重写卡片网格布局，在电脑端设定为 5 列展示！
+    resultsDiv.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full';
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
