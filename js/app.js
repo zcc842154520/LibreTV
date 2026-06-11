@@ -869,7 +869,8 @@ function renderPaginationControls(totalFilteredLength) {
 
     const paginationDiv = document.createElement('div');
     paginationDiv.id = 'paginationContainer';
-    paginationDiv.className = 'w-full flex justify-center items-center mt-10 mb-6 space-x-4 col-span-full';
+    // 增加了 flex-wrap 和 gap-y-3 适配手机端换行显示
+    paginationDiv.className = 'w-full flex justify-center items-center mt-10 mb-6 flex-wrap gap-y-4 col-span-full';
 
     const prevDisabled = currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#333] hover:text-white cursor-pointer';
     const prevAction = currentPage === 1 ? '' : `onclick="changePage(${currentPage - 1})"`;
@@ -878,22 +879,69 @@ function renderPaginationControls(totalFilteredLength) {
     const nextAction = currentPage === totalPages ? '' : `onclick="changePage(${currentPage + 1})"`;
 
     paginationDiv.innerHTML = `
-        <button ${prevAction} class="px-4 py-2 bg-[#222] text-gray-300 border border-[#444] rounded-md transition-colors ${prevDisabled}">上一页</button>
-        <span class="text-sm text-gray-400">
-            第 <span class="text-white font-bold">${currentPage}</span> / ${totalPages} 页
-            <span class="ml-2 text-xs">(共 ${totalFilteredLength} 条)</span>
-        </span>
-        <button ${nextAction} class="px-4 py-2 bg-[#222] text-gray-300 border border-[#444] rounded-md transition-colors ${nextDisabled}">下一页</button>
+        <div class="flex items-center space-x-4">
+            <button ${prevAction} class="px-4 py-2 bg-[#222] text-gray-300 border border-[#444] rounded-md transition-colors ${prevDisabled}">上一页</button>
+            <span class="text-sm text-gray-400">
+                第 <span class="text-white font-bold">${currentPage}</span> / ${totalPages} 页
+                <span class="ml-2 text-xs hidden sm:inline">(共 ${totalFilteredLength} 条)</span>
+            </span>
+            <button ${nextAction} class="px-4 py-2 bg-[#222] text-gray-300 border border-[#444] rounded-md transition-colors ${nextDisabled}">下一页</button>
+        </div>
+        
+        <div class="flex items-center space-x-2 w-full sm:w-auto justify-center sm:ml-6 sm:pl-6 sm:border-l border-[#444]">
+            <span class="text-sm text-gray-400">跳至</span>
+            <input type="number" id="jumpPageInput" min="1" max="${totalPages}" value="${currentPage}" 
+                   class="w-16 px-2 py-1.5 bg-[#111] border border-[#444] rounded-md text-white text-center text-sm focus:outline-none focus:border-pink-600 focus:ring-1 focus:ring-pink-600"
+                   onkeypress="if(event.key === 'Enter') jumpToPage(${totalPages})">
+            <span class="text-sm text-gray-400">页</span>
+            <button onclick="jumpToPage(${totalPages})" class="px-3 py-1.5 bg-[#222] text-gray-300 hover:bg-[#333] hover:text-white border border-[#444] rounded-md transition-colors text-sm">
+                确定
+            </button>
+        </div>
     `;
 
     resultsArea.appendChild(paginationDiv);
 }
 
+// 处理翻页动作
 function changePage(newPage) {
-    const totalPages = Math.ceil(globalSearchResults.length / itemsPerPage);
+    const filteredData = currentCategory === '全部' ? 
+        globalSearchResults : 
+        globalSearchResults.filter(item => (item.source_name || '其他') === currentCategory);
+        
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    
     if (newPage >= 1 && newPage <= totalPages) {
         currentPage = newPage;
         renderPage(currentPage);
+    }
+}
+
+// 新增：处理输入框跳转逻辑
+function jumpToPage(totalPages) {
+    const input = document.getElementById('jumpPageInput');
+    if (!input) return;
+    
+    let newPage = parseInt(input.value);
+    
+    // 如果输入的不是数字，给个提示
+    if (isNaN(newPage)) {
+        if (typeof showToast === 'function') {
+            showToast('请输入有效的页码', 'warning');
+        }
+        input.value = currentPage; // 恢复当前页
+        return;
+    }
+    
+    // 智能边界处理：输入太大跳最后一页，输入负数跳第一页
+    if (newPage < 1) newPage = 1;
+    if (newPage > totalPages) newPage = totalPages;
+    
+    // 如果输入的刚好是当前页，就不重复渲染了
+    if (newPage !== currentPage) {
+        changePage(newPage);
+    } else {
+        input.value = currentPage; // 修正格式（比如输入01变成1）
     }
 }
 
