@@ -531,6 +531,32 @@ async function search(isInit = false) {
                 const data = await response.json();
                 
                 if (!data || !data.list || !Array.isArray(data.list) || data.list.length === 0) {
+                    // 缓存未命中，降级到主查询
+                    if (API_SITES[apiId] && API_SITES[apiId].fallbackApi) {
+                        try {
+                            const fallbackUrl = API_SITES[apiId].fallbackApi + API_CONFIG.search.path + encodeURIComponent(query);
+                            const fbController = new AbortController();
+                            const fbTimeoutId = setTimeout(() => fbController.abort(), 30000);
+                            const fbResponse = await fetch(PROXY_URL + encodeURIComponent(fallbackUrl), {
+                                headers: API_CONFIG.search.headers,
+                                signal: fbController.signal
+                            });
+                            clearTimeout(fbTimeoutId);
+                            if (fbResponse.ok) {
+                                const fbData = await fbResponse.json();
+                                if (fbData && fbData.list && Array.isArray(fbData.list) && fbData.list.length > 0) {
+                                    return fbData.list.map(item => ({
+                                        ...item,
+                                        source_name: apiName,
+                                        source_code: apiId,
+                                        api_url: apiId.startsWith('custom_') ? getCustomApiInfo(apiId.replace('custom_', ''))?.url : undefined
+                                    }));
+                                }
+                            }
+                        } catch (fbError) {
+                            console.warn('GDrive降级查询失败:', fbError);
+                        }
+                    }
                     return [];
                 }
                 

@@ -29,7 +29,8 @@ const API_SITES = {
     },
     // 2. 中间：沙雕社(云盘)
     gdrive_n8n: {
-        api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
+        api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-cached',
+        fallbackApi: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
         name: '沙雕社(云盘)',
         adult: false,
         filterAdRule: null
