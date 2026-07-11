@@ -57,13 +57,8 @@ async function handleApiRequest(url) {
             if (!id) throw new Error('缺少视频ID参数');
             
             // 拼接目标详情 API 地址
-            // 详情页使用fallbackApi（支持id过滤），搜索使用缓存api
-let detailUrl;
-if (API_SITES[source] && API_SITES[source].fallbackApi) {
-    detailUrl = `${API_SITES[source].fallbackApi}${API_CONFIG.detail.path}${id}`;
-} else {
-    detailUrl = `${API_SITES[source].api}${API_CONFIG.detail.path}${id}`;
-}
+            // 缓存接口已支持ids过滤，直接使用
+const detailUrl = `${API_SITES[source].api}${API_CONFIG.detail.path}${id}`;
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 60000);
