@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectedApiCount();
     
     if (!localStorage.getItem('hasInitializedDefaults')) {
-        selectedAPIs = ["heimuer", "dbzy"];
+        selectedAPIs = [...allAvailableApis];
         localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
         localStorage.setItem('yellowFilterEnabled', 'true');
         localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, 'true');
