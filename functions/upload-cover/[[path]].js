@@ -1,7 +1,6 @@
-﻿// ============================================
+// ============================================
 // LibreTV Cover Image Upload to R2
 // POST { url: "douyin_cover_url" }
-// → downloads cover → stores in R2 → returns R2 URL
 // ============================================
 
 export async function onRequest(context) {
@@ -35,8 +34,11 @@ export async function onRequest(context) {
       });
     }
 
-    if (!env.COVERS_BUCKET) {
-      return new Response(JSON.stringify({ error: "R2 bucket not configured" }), {
+    const bucket = env.COVERS_BUCKET;
+    if (!bucket || typeof bucket.put !== "function") {
+      return new Response(JSON.stringify({ 
+        error: "R2 binding not configured. Go to CF Pages > Settings > Functions > R2 bucket bindings, not env vars."
+      }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -44,16 +46,20 @@ export async function onRequest(context) {
 
     const urlHash = await sha256Hex(sourceUrl);
     const ext = guessImageExt(sourceUrl);
-    const r2Key = `covers/${urlHash.substring(0, 16)}.${ext}`;
+    const r2Key = "covers/" + urlHash.substring(0, 16) + "." + ext;
 
-    // Check if already exists
-    const existing = await env.COVERS_BUCKET.head(r2Key);
-    if (existing !== null) {
-      const r2Url = buildR2Url(env, r2Key);
-      return new Response(JSON.stringify({ success: true, r2_url: r2Url, cached: true }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Check if already uploaded (use try/catch since head may not exist)
+    try {
+      const existing = await bucket.get(r2Key, { range: { offset: 0, length: 1 } });
+      if (existing !== null) {
+        const r2Url = buildR2Url(env, r2Key);
+        return new Response(JSON.stringify({ success: true, r2_url: r2Url, cached: true }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    } catch (e) {
+      // Not found, continue to download
     }
 
     // Download from source
@@ -65,9 +71,9 @@ export async function onRequest(context) {
     });
 
     if (!imageResp.ok) {
-      return new Response(JSON.stringify({ 
-        error: `Download failed: ${imageResp.status}`, 
-        source_url: sourceUrl 
+      return new Response(JSON.stringify({
+        error: "Download failed: " + imageResp.status,
+        source_url: sourceUrl
       }), {
         status: 502,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -77,7 +83,7 @@ export async function onRequest(context) {
     const imageData = await imageResp.arrayBuffer();
     const contentType = imageResp.headers.get("content-type") || "image/jpeg";
 
-    await env.COVERS_BUCKET.put(r2Key, imageData, {
+    await bucket.put(r2Key, imageData, {
       httpMetadata: { contentType },
     });
 
@@ -113,8 +119,7 @@ function guessImageExt(url) {
 function buildR2Url(env, key) {
   const customDomain = env.R2_PUBLIC_DOMAIN || "";
   if (customDomain) {
-    return `https://${customDomain}/${key}`;
+    return "https://" + customDomain + "/" + key;
   }
-  // Standard r2.dev URL for public buckets
-  return `https://pub-${env.R2_ACCOUNT_HASH || "CHANGE_ME"}.r2.dev/${key}`;
+  return "https://pub-CHANGE-ME.r2.dev/" + key;
 }
