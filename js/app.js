@@ -96,8 +96,10 @@ function initAPICheckboxes() {
         });
     });
 }
-    
-    function renderCustomAPIsList() {
+
+function checkAdultAPIsSelected() { /* stub - adult APIs removed */ }
+
+function renderCustomAPIsList() {
     const container = document.getElementById('customApisList');
     if (!container) return;
     
@@ -496,9 +498,9 @@ async function search(isInit = false) {
         });
         
         const resultsArray = await Promise.allSettled(searchPromises);
-        resultsArray.forEach(results => {
-            if (Array.isArray(results) && results.length > 0) {
-                allResults = allResults.concat(results);
+        resultsArray.forEach(result => {
+            if (result.status === 'fulfilled' && Array.isArray(result.value) && result.value.length > 0) {
+                allResults = allResults.concat(result.value);
             }
         });
         
