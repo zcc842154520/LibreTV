@@ -442,7 +442,7 @@ async function search(isInit = false) {
                 }
                 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 60000);
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
                 
                 const response = await fetch(PROXY_URL + encodeURIComponent(apiUrl), {
                     headers: API_CONFIG.search.headers,
@@ -459,7 +459,7 @@ async function search(isInit = false) {
                         try {
                             const fallbackUrl = API_SITES[apiId].fallbackApi + API_CONFIG.search.path + encodeURIComponent(query);
                             const fbController = new AbortController();
-                            const fbTimeoutId = setTimeout(() => fbController.abort(), 30000);
+                            const fbTimeoutId = setTimeout(() => fbController.abort(), 8000);
                             const fbResponse = await fetch(PROXY_URL + encodeURIComponent(fallbackUrl), {
                                 headers: API_CONFIG.search.headers,
                                 signal: fbController.signal
@@ -495,7 +495,7 @@ async function search(isInit = false) {
             }
         });
         
-        const resultsArray = await Promise.all(searchPromises);
+        const resultsArray = await Promise.allSettled(searchPromises);
         resultsArray.forEach(results => {
             if (Array.isArray(results) && results.length > 0) {
                 allResults = allResults.concat(results);
