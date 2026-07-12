@@ -373,6 +373,7 @@ function setupEventListeners() {
         });
     }
 }
+}
 
 function resetSearchArea() {
     document.getElementById('results').innerHTML = '';
