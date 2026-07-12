@@ -95,6 +95,7 @@ function initAPICheckboxes() {
             checkAdultAPIsSelected();
         });
     });
+}
     
     function renderCustomAPIsList() {
     const container = document.getElementById('customApisList');
@@ -372,7 +373,6 @@ function setupEventListeners() {
             localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, e.target.checked);
         });
     }
-}
 }
 
 function resetSearchArea() {
