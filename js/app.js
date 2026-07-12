@@ -1,4 +1,4 @@
-// =====================================================================
+﻿// =====================================================================
 // 1. 动态读取 config.js 中所有可用的 API 键名
 const allAvailableApis = Object.keys(API_SITES);
 let selectedAPIs = [];
@@ -48,23 +48,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.getItem('hasInitializedDefaults')) {
         selectedAPIs = [...allAvailableApis];
         localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
-        localStorage.setItem('yellowFilterEnabled', 'true');
         localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, 'true');
         localStorage.setItem('hasInitializedDefaults', 'true');
     }
     
-    const yellowFilterToggle = document.getElementById('yellowFilterToggle');
-    if (yellowFilterToggle) {
-        yellowFilterToggle.checked = localStorage.getItem('yellowFilterEnabled') === 'true';
-    }
-    
+
     const adFilterToggle = document.getElementById('adFilterToggle');
     if (adFilterToggle) {
         adFilterToggle.checked = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage) !== 'false';
     }
     
     setupEventListeners();
-    setTimeout(checkAdultAPIsSelected, 100);
     
     tryAutoSearch();
 });
@@ -102,79 +96,7 @@ function initAPICheckboxes() {
         });
     });
     
-    if (!HIDE_BUILTIN_ADULT_APIS) {
-        const adultTitle = document.createElement('div');
-        adultTitle.className = 'api-group-title adult';
-        adultTitle.innerHTML = `黄色资源采集站 <span class="adult-warning">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-        </span>`;
-        container.appendChild(adultTitle);
-        
-        Object.keys(API_SITES).forEach(apiKey => {
-            const api = API_SITES[apiKey];
-            if (!api.adult) return; 
-            
-            const checked = selectedAPIs.includes(apiKey);
-            
-            const checkbox = document.createElement('div');
-            checkbox.className = 'flex items-center';
-            checkbox.innerHTML = `
-                <input type="checkbox" id="api_${apiKey}" 
-                       class="form-checkbox h-3 w-3 text-blue-600 bg-[#222] border border-[#333] api-adult" 
-                       ${checked ? 'checked' : ''} 
-                       data-api="${apiKey}">
-                <label for="api_${apiKey}" class="ml-1 text-xs text-pink-400 truncate">${api.name}</label>
-            `;
-            container.appendChild(checkbox);
-            
-            checkbox.querySelector('input').addEventListener('change', function() {
-                updateSelectedAPIs();
-                checkAdultAPIsSelected();
-            });
-        });
-    }
-    
-    checkAdultAPIsSelected();
-}
-
-function checkAdultAPIsSelected() {
-    const adultBuiltinCheckboxes = document.querySelectorAll('#apiCheckboxes .api-adult:checked');
-    const customApiCheckboxes = document.querySelectorAll('#customApisList .api-adult:checked');
-    const hasAdultSelected = adultBuiltinCheckboxes.length > 0 || customApiCheckboxes.length > 0;
-    
-    const yellowFilterToggle = document.getElementById('yellowFilterToggle');
-    if (!yellowFilterToggle) return;
-    const yellowFilterContainer = yellowFilterToggle.closest('div').parentNode;
-    const filterDescription = yellowFilterContainer.querySelector('p.filter-description');
-    
-    if (hasAdultSelected) {
-        yellowFilterToggle.checked = false;
-        yellowFilterToggle.disabled = true;
-        localStorage.setItem('yellowFilterEnabled', 'false');
-        yellowFilterContainer.classList.add('filter-disabled');
-        
-        if (filterDescription) {
-            filterDescription.innerHTML = '<strong class="text-pink-300">选中黄色资源站时无法启用此过滤</strong>';
-        }
-        
-        const existingTooltip = yellowFilterContainer.querySelector('.filter-tooltip');
-        if (existingTooltip) existingTooltip.remove();
-    } else {
-        yellowFilterToggle.disabled = false;
-        yellowFilterContainer.classList.remove('filter-disabled');
-        
-        if (filterDescription) {
-            filterDescription.innerHTML = '过滤"伦理片"等黄色内容';
-        }
-        
-        const existingTooltip = yellowFilterContainer.querySelector('.filter-tooltip');
-        if (existingTooltip) existingTooltip.remove();
-    }
-}
-
-function renderCustomAPIsList() {
+    function renderCustomAPIsList() {
     const container = document.getElementById('customApisList');
     if (!container) return;
     
@@ -199,7 +121,7 @@ function renderCustomAPIsList() {
                        data-custom-index="${index}">
                 <div class="flex-1 min-w-0">
                     <div class="text-xs font-medium ${textColorClass} truncate">
-                        ${adultTag}${api.name}
+                        ${api.name}
                     </div>
                     <div class="text-xs text-gray-500 truncate">${api.url}</div>
                 </div>

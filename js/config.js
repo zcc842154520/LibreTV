@@ -1,4 +1,4 @@
-// 全局常量配置
+﻿// 全局常量配置
 const PROXY_URL = '/proxy/';    // 适用于 Cloudflare, Netlify (带重写), Vercel (带重写)
 const SEARCH_HISTORY_KEY = 'videoSearchHistory';
 const MAX_HISTORY_ITEMS = 5;
@@ -23,23 +23,20 @@ const API_SITES = {
     // 1. 排在最前面：合集(连载)
     douyin_mix_n8n: {
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/douyin-mix-playlist',
-        name: '合集(连载)',
-        adult: false,
+        name: '合集(连载)',
         filterAdRule: null
     },
     // 2. 中间：沙雕社(云盘)
     gdrive_n8n: {
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-cached',
         fallbackApi: 'https://ocin8n.ccwork.nyc.mn/webhook/gdrive-playlist',
-        name: '沙雕社(云盘)',
-        adult: false,
+        name: '沙雕社(云盘)',
         filterAdRule: null
     },
     // 3. 最后面：长视频
     douyin_n8n: {
         api: 'https://ocin8n.ccwork.nyc.mn/webhook/libretv-playlist/api.php/provide/vod', 
-        name: '长视频',
-        adult: false,
+        name: '长视频',
         filterAdRule: null
     }
 };
