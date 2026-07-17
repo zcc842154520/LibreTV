@@ -1,0 +1,28 @@
+# Cloudflare Pages 缓存控制
+# 静态资源：短期缓存，部署后快速生效
+/js/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+/css/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+# HTML 文件：不缓存，确保部署后立即更新
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/player.html
+  Cache-Control: no-cache, must-revalidate
+
+/about.html
+  Cache-Control: no-cache, must-revalidate
+
+/privacy.html
+  Cache-Control: no-cache, must-revalidate
+
+# API 代理：短缓存
+/proxy/*
+  Cache-Control: public, max-age=60, must-revalidate
+
+# 其他资源：短缓存
+/*
+  Cache-Control: public, max-age=300, must-revalidate
