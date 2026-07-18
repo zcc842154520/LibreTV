@@ -435,11 +435,11 @@ async function search(isInit = false) {
                     const customApi = getCustomApiInfo(customIndex);
                     if (!customApi) return [];
                     
-                    apiUrl = customApi.url + API_CONFIG.search.path + encodeURIComponent(query);
+                    apiUrl = customApi.url + API_CONFIG.search.path + encodeURIComponent(query) + '&_t=' + Date.now();
                     apiName = customApi.name;
                 } else {
                     if (!API_SITES[apiId]) return [];
-                    apiUrl = API_SITES[apiId].api + API_CONFIG.search.path + encodeURIComponent(query);
+                    apiUrl = API_SITES[apiId].api + API_CONFIG.search.path + encodeURIComponent(query) + '&_t=' + Date.now();
                     apiName = API_SITES[apiId].name;
                 }
                 
@@ -459,7 +459,7 @@ async function search(isInit = false) {
                     // 缓存未命中，降级到主查询
                     if (API_SITES[apiId] && API_SITES[apiId].fallbackApi) {
                         try {
-                            const fallbackUrl = API_SITES[apiId].fallbackApi + API_CONFIG.search.path + encodeURIComponent(query);
+                            const fallbackUrl = API_SITES[apiId].fallbackApi + API_CONFIG.search.path + encodeURIComponent(query) + '&_t=' + Date.now();
                             const fbController = new AbortController();
                             const fbTimeoutId = setTimeout(() => fbController.abort(), 8000);
                             const fbResponse = await fetch(PROXY_URL + encodeURIComponent(fallbackUrl), {

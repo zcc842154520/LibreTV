@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
     // --- 从环境变量读取配置 ---
     const DEBUG_ENABLED = (env.DEBUG === 'true');
-    const CACHE_TTL = parseInt(env.CACHE_TTL || '300'); // 默认 24 小时
+    const CACHE_TTL = parseInt(env.CACHE_TTL || '60'); // 默认 24 小时
     const MAX_RECURSION = parseInt(env.MAX_RECURSION || '5'); // 默认 5 层
     // 广告过滤已移至播放器处理，代理不再执行
     let USER_AGENTS = [ // 提供一个基础的默认值
