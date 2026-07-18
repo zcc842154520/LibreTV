@@ -3,4 +3,4 @@ Allow: /
 Disallow: /js/
 Disallow: /css/
 
-Sitemap: https://libretv.is-an.org/sitemap.xml
+Sitemap: https://921219.xyz/sitemap.xml
