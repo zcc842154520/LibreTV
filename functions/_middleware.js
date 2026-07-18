@@ -1,4 +1,4 @@
-﻿import { sha256 } from '../js/sha256.js';
+import { sha256 } from '../js/sha256.js';
 
 // Cloudflare Pages Middleware: inject env vars + force no-cache on all responses
 export async function onRequest(context) {
@@ -20,7 +20,7 @@ export async function onRequest(context) {
       passwordHash = await sha256(password);
     }
     html = html.replace('window.__ENV__.PASSWORD = "{{PASSWORD}}";',
-                        window.__ENV__.PASSWORD = "";);
+                        `window.__ENV__.PASSWORD = "${passwordHash}";`);
     return new Response(html, {
       headers: newHeaders,
       status: response.status,
